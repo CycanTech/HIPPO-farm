@@ -5,7 +5,7 @@ export default async function getAPYS(pools: PoolInfo[]): Promise<{ [poolId: num
   const allPoolPoint = pools.reduce((t, { allocPoint }) => (t += allocPoint), 0)
 
   const APYLIST = await Promise.all(
-    pools.map((item) => getAPY(item.token, allPoolPoint / item.allocPoint))
+    pools.map((item) => getAPY(item.token, item.allocPoint / allPoolPoint))
   )
   const APYS: { [poolId: number]: string } = {}
   APYLIST.forEach((APY, i) => {

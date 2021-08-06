@@ -1,4 +1,4 @@
-import TransactionHistory from '@/common/ts/TransactionHistory';
+import TransactionHistory from '@/common/ts/TransactionHistory'
 import { Token, TokenAmount } from '@cointribute/pancakeswap-sdk-v2'
 
 export interface State {
@@ -24,6 +24,7 @@ export interface PoolInfo {
   tokenSymbol: string
   poolStakedTokenAmount: TokenAmount
   currencys: [Token, Token] | undefined
+  poolShare?: string
   stakedAmount?: TokenAmount
   earningsAmount?: TokenAmount
   earningsBalanceAmount?: TokenAmount

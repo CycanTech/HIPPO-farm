@@ -8,13 +8,13 @@ import MasterChefAbi from '../abi/MasterChefAbi.json'
 import getToken from './getToken'
 import getCurrencysByLPToken from './getCurrencysByLPToken'
 import getBalance from './getBalance'
+import getPoolShare from './getPoolShare'
 
 export default async function getPools(): Promise<PoolInfo[]> {
   const web3 = getNotAccountWeb3()
   const contract = getContract(MasterChefAbi, MASTER_CHEF_ADDRESS, web3)
   const length = await contract.methods.poolLength().call()
   const poolIdList = [...new Array(Number(length)).keys()]
-  console.log(length)
   const pools = await Promise.all(poolIdList.map((id) => getPoolInfo(id)))
 
   return pools.filter((item) => item !== undefined) as PoolInfo[]
@@ -37,11 +37,17 @@ export async function updatePool(pool: PoolInfo, account: string): Promise<PoolI
     getBalance(pool.token, account),
     getBalance(MINING_TOKEN, account),
   ])
+  const stakedAmount = new TokenAmount(pool.token, userInfo.amount)
   return Object.assign({}, pool, {
     stakeTokenBalanceAmount,
     earningsBalanceAmount,
+    poolShare: getPoolShare({
+      token: pool.token,
+      stakedAmount: userInfo.amount,
+      poolStakedTokenAmount: pool.poolStakedTokenAmount.raw.toString(),
+    }),
     earningsAmount: new TokenAmount(pool.miningToken, earnings),
-    stakedAmount: new TokenAmount(pool.token, userInfo.amount),
+    stakedAmount,
   })
 }
 

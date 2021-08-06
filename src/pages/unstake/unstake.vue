@@ -197,7 +197,6 @@ export default defineComponent({
         )
         await withdraw.send({ from: account.value })
         Toast.clear()
-        _addHarvestEarnedHistory()
         _handleUnstakeSuccess(unstakeAmount.value, poolInfo.value, account.value)
       } catch (error) {
         Toast.clear()

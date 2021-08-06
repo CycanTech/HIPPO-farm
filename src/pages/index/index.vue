@@ -62,7 +62,7 @@
         <div class="pool-info">
           <div class="pool-share">
             <span>{{ t('poolShare') }}:</span>
-            <span>{{ poolShare(pool) }}</span>
+            <span>{{ pool.poolShare ?? '-' }}</span>
           </div>
           <div class="APY">
             <span>{{ t('APY') }}:</span>
@@ -87,8 +87,8 @@ import useProxyRouter from '../../common/use/useProxyRouter'
 import { PoolInfo, State } from '../../store/state-types'
 import TokenAvatar from '../../components/token-avatar/token-avatar.vue'
 import Loading from '../../components/loading/index.vue'
-import { MASTER_CHEF_ADDRESS, MINING_TOKEN, ZERO, ONE_BIPS } from '@/common/ts/const'
-import { Percent, TokenAmount } from '@cointribute/pancakeswap-sdk-v2'
+import { MASTER_CHEF_ADDRESS, MINING_TOKEN, ZERO } from '@/common/ts/const'
+import { TokenAmount } from '@cointribute/pancakeswap-sdk-v2'
 import { Dialog } from '@/components/dialog'
 import { Toast } from '@/components/toast'
 import getWeb3 from '@/common/ts/getWeb3'
@@ -181,19 +181,6 @@ export default defineComponent({
         confirmText: t('confirm'),
       })
     }
-    const poolShare = (pool: PoolInfo) => {
-      if (!isConnected.value) {
-        return '-'
-      }
-      if (!pool.stakedAmount || pool.stakedAmount.equalTo(ZERO)) {
-        return '0%'
-      }
-      if (pool.poolStakedTokenAmount.lessThan(pool.stakedAmount)) {
-        return '<0.01%'
-      }
-      const percentage = new Percent(pool.stakedAmount.raw, pool.poolStakedTokenAmount.raw)
-      return percentage.lessThan(ONE_BIPS) ? '<0.01%' : `≈${percentage.toFixed(2)}%`
-    }
 
     return {
       pools,
@@ -211,7 +198,6 @@ export default defineComponent({
       onHarvestEarned,
       t,
       jump,
-      poolShare,
       learnAPY,
     }
   },
